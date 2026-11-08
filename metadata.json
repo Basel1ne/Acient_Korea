@@ -1,0 +1,6 @@
+{
+  "name": "고려사 시험 대비 마스터 (교과서 89·92~97·100~101쪽)",
+  "description": "고려 시대 핵심 시험 범위(89쪽, 92~97쪽, 100~101쪽)를 완벽 대비하는 객관식 50제, 주관식 30제 문제은행 및 실전 모의고사 학습 앱",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
