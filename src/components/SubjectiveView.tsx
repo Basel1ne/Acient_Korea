@@ -129,7 +129,7 @@ export const SubjectiveView: React.FC<SubjectiveViewProps> = ({
             >
               전체
             </button>
-            {([89, 92, 93, 94, 95, 96, 97, 100, 101] as PageRange[]).map((pg) => (
+            {Array.from(new Set(questions.map((q) => q.page))).sort((a, b) => a - b).map((pg) => (
               <button
                 key={pg}
                 onClick={() => setSelectedPage(pg)}

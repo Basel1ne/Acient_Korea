@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MultipleChoiceQuestion, SubjectiveQuestion, PageRange } from '../types';
+import { MultipleChoiceQuestion, SubjectiveQuestion, Era } from '../types';
 import {
   Timer,
   Play,
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 
 interface MockExamViewProps {
+  era: Era;
   mcqQuestions: MultipleChoiceQuestion[];
   subjectiveQuestions: SubjectiveQuestion[];
 }
@@ -21,6 +22,7 @@ interface MockExamViewProps {
 type ExamType = 'standard' | 'mcq_focus' | 'hard_focus';
 
 export const MockExamView: React.FC<MockExamViewProps> = ({
+  era,
   mcqQuestions,
   subjectiveQuestions,
 }) => {
@@ -114,24 +116,43 @@ export const MockExamView: React.FC<MockExamViewProps> = ({
   const mcqPercentage = sessionMcqs.length > 0 ? Math.round((totalMcqScore / sessionMcqs.length) * 100) : 0;
 
   // Breakdown by section
-  const sectionGroups: Record<string, { total: number; correct: number }> = {
-    '89쪽 (문벌 동요·서경 천도)': { total: 0, correct: 0 },
-    '92~93쪽 (다원적 질서·거란 격퇴)': { total: 0, correct: 0 },
-    '94~95쪽 (여진 정벌·벽란도 무역)': { total: 0, correct: 0 },
-    '96~97쪽 (몽골 침략·대몽 항쟁)': { total: 0, correct: 0 },
-    '100~101쪽 (공민왕 개혁·신흥 무인)': { total: 0, correct: 0 },
-  };
+  const sectionGroups: Record<string, { total: number; correct: number }> = era === 'goryeo'
+    ? {
+        '89쪽 (문벌 동요·서경 천도)': { total: 0, correct: 0 },
+        '92~93쪽 (다원적 질서·거란 격퇴)': { total: 0, correct: 0 },
+        '94~95쪽 (여진 정벌·벽란도 무역)': { total: 0, correct: 0 },
+        '96~97쪽 (몽골 침략·대몽 항쟁)': { total: 0, correct: 0 },
+        '100~101쪽 (공민왕 개혁·신흥 무인)': { total: 0, correct: 0 },
+      }
+    : {
+        '116쪽 (국가 기틀 확립·경국대전)': { total: 0, correct: 0 },
+        '122~123쪽 (사림의 등장·4대 사화)': { total: 0, correct: 0 },
+        '124~125쪽 (서원·향약·붕당 형성)': { total: 0, correct: 0 },
+        '132~135쪽 (임진왜란 극복·무기 분석)': { total: 0, correct: 0 },
+        '136~139쪽 (호란·중립외교·북벌·문화교류)': { total: 0, correct: 0 },
+      };
 
   sessionMcqs.forEach((q) => {
-    let key = '89쪽 (문벌 동요·서경 천도)';
-    if (q.page === 92 || q.page === 93) key = '92~93쪽 (다원적 질서·거란 격퇴)';
-    else if (q.page === 94 || q.page === 95) key = '94~95쪽 (여진 정벌·벽란도 무역)';
-    else if (q.page === 96 || q.page === 97) key = '96~97쪽 (몽골 침략·대몽 항쟁)';
-    else if (q.page === 100 || q.page === 101) key = '100~101쪽 (공민왕 개혁·신흥 무인)';
+    let key = '';
+    if (era === 'goryeo') {
+      key = '89쪽 (문벌 동요·서경 천도)';
+      if (q.page === 92 || q.page === 93) key = '92~93쪽 (다원적 질서·거란 격퇴)';
+      else if (q.page === 94 || q.page === 95) key = '94~95쪽 (여진 정벌·벽란도 무역)';
+      else if (q.page === 96 || q.page === 97) key = '96~97쪽 (몽골 침략·대몽 항쟁)';
+      else if (q.page === 100 || q.page === 101) key = '100~101쪽 (공민왕 개혁·신흥 무인)';
+    } else {
+      key = '116쪽 (국가 기틀 확립·경국대전)';
+      if (q.page === 122 || q.page === 123) key = '122~123쪽 (사림의 등장·4대 사화)';
+      else if (q.page === 124 || q.page === 125) key = '124~125쪽 (서원·향약·붕당 형성)';
+      else if (q.page >= 132 && q.page <= 135) key = '132~135쪽 (임진왜란 극복·무기 분석)';
+      else if (q.page >= 136) key = '136~139쪽 (호란·중립외교·북벌·문화교류)';
+    }
 
-    sectionGroups[key].total += 1;
-    if (examAnswers[q.id] === q.answer) {
-      sectionGroups[key].correct += 1;
+    if (sectionGroups[key]) {
+      sectionGroups[key].total += 1;
+      if (examAnswers[q.id] === q.answer) {
+        sectionGroups[key].correct += 1;
+      }
     }
   });
 

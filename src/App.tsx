@@ -5,17 +5,34 @@ import { MultipleChoiceView } from './components/MultipleChoiceView';
 import { SubjectiveView } from './components/SubjectiveView';
 import { MockExamView } from './components/MockExamView';
 import { PrintExamModal } from './components/PrintExamModal';
-import { multipleChoiceQuestions } from './data/multipleChoiceQuestions';
-import { subjectiveQuestions } from './data/subjectiveQuestions';
-import { PageRange } from './types';
-import { BookOpen, CheckCircle, GraduationCap, Sparkles } from 'lucide-react';
+
+// Goryeo Data
+import { summaryData as goryeoSummaryData } from './data/summaryNotes';
+import { multipleChoiceQuestions as goryeoMcqQuestions } from './data/multipleChoiceQuestions';
+import { subjectiveQuestions as goryeoSubQuestions } from './data/subjectiveQuestions';
+
+// Joseon Data
+import { joseonSummaryData } from './data/joseonSummaryNotes';
+import { joseonMultipleChoiceQuestions } from './data/joseonMultipleChoiceQuestions';
+import { joseonSubjectiveQuestions } from './data/joseonSubjectiveQuestions';
+
+import { PageRange, Era } from './types';
 
 export default function App() {
+  const [era, setEra] = useState<Era>(() => {
+    try {
+      const saved = localStorage.getItem('korea_history_era');
+      return (saved === 'joseon' || saved === 'goryeo') ? saved : 'joseon';
+    } catch {
+      return 'joseon';
+    }
+  });
+
   const [activeTab, setActiveTab] = useState<ActiveTab>('summary');
   const [mcqPageFilter, setMcqPageFilter] = useState<PageRange | 'all'>('all');
 
-  // Local storage persisted state
-  const [userAnswers, setUserAnswers] = useState<Record<number, number>>(() => {
+  // Goryeo persisted state
+  const [goryeoMcqAnswers, setGoryeoMcqAnswers] = useState<Record<number, number>>(() => {
     try {
       const saved = localStorage.getItem('goryeo_mcq_answers');
       return saved ? JSON.parse(saved) : {};
@@ -23,8 +40,7 @@ export default function App() {
       return {};
     }
   });
-
-  const [bookmarks, setBookmarks] = useState<number[]>(() => {
+  const [goryeoBookmarks, setGoryeoBookmarks] = useState<number[]>(() => {
     try {
       const saved = localStorage.getItem('goryeo_bookmarks');
       return saved ? JSON.parse(saved) : [];
@@ -32,8 +48,7 @@ export default function App() {
       return [];
     }
   });
-
-  const [userTextAnswers, setUserTextAnswers] = useState<Record<number, string>>(() => {
+  const [goryeoSubAnswers, setGoryeoSubAnswers] = useState<Record<number, string>>(() => {
     try {
       const saved = localStorage.getItem('goryeo_sub_answers');
       return saved ? JSON.parse(saved) : {};
@@ -41,8 +56,7 @@ export default function App() {
       return {};
     }
   });
-
-  const [userGrades, setUserGrades] = useState<Record<number, 'correct' | 'partial' | 'wrong'>>(() => {
+  const [goryeoSubGrades, setGoryeoSubGrades] = useState<Record<number, 'correct' | 'partial' | 'wrong'>>(() => {
     try {
       const saved = localStorage.getItem('goryeo_sub_grades');
       return saved ? JSON.parse(saved) : {};
@@ -51,78 +65,133 @@ export default function App() {
     }
   });
 
-  // Save to localStorage
-  useEffect(() => {
+  // Joseon persisted state
+  const [joseonMcqAnswers, setJoseonMcqAnswers] = useState<Record<number, number>>(() => {
     try {
-      localStorage.setItem('goryeo_mcq_answers', JSON.stringify(userAnswers));
-    } catch (e) {
-      console.error(e);
+      const saved = localStorage.getItem('joseon_mcq_answers');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
     }
-  }, [userAnswers]);
+  });
+  const [joseonBookmarks, setJoseonBookmarks] = useState<number[]>(() => {
+    try {
+      const saved = localStorage.getItem('joseon_bookmarks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [joseonSubAnswers, setJoseonSubAnswers] = useState<Record<number, string>>(() => {
+    try {
+      const saved = localStorage.getItem('joseon_sub_answers');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  const [joseonSubGrades, setJoseonSubGrades] = useState<Record<number, 'correct' | 'partial' | 'wrong'>>(() => {
+    try {
+      const saved = localStorage.getItem('joseon_sub_grades');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
 
+  // Save era
   useEffect(() => {
     try {
-      localStorage.setItem('goryeo_bookmarks', JSON.stringify(bookmarks));
+      localStorage.setItem('korea_history_era', era);
     } catch (e) {
       console.error(e);
     }
-  }, [bookmarks]);
+  }, [era]);
 
+  // Save Goryeo state
   useEffect(() => {
     try {
-      localStorage.setItem('goryeo_sub_answers', JSON.stringify(userTextAnswers));
+      localStorage.setItem('goryeo_mcq_answers', JSON.stringify(goryeoMcqAnswers));
+      localStorage.setItem('goryeo_bookmarks', JSON.stringify(goryeoBookmarks));
+      localStorage.setItem('goryeo_sub_answers', JSON.stringify(goryeoSubAnswers));
+      localStorage.setItem('goryeo_sub_grades', JSON.stringify(goryeoSubGrades));
     } catch (e) {
       console.error(e);
     }
-  }, [userTextAnswers]);
+  }, [goryeoMcqAnswers, goryeoBookmarks, goryeoSubAnswers, goryeoSubGrades]);
 
+  // Save Joseon state
   useEffect(() => {
     try {
-      localStorage.setItem('goryeo_sub_grades', JSON.stringify(userGrades));
+      localStorage.setItem('joseon_mcq_answers', JSON.stringify(joseonMcqAnswers));
+      localStorage.setItem('joseon_bookmarks', JSON.stringify(joseonBookmarks));
+      localStorage.setItem('joseon_sub_answers', JSON.stringify(joseonSubAnswers));
+      localStorage.setItem('joseon_sub_grades', JSON.stringify(joseonSubGrades));
     } catch (e) {
       console.error(e);
     }
-  }, [userGrades]);
+  }, [joseonMcqAnswers, joseonBookmarks, joseonSubAnswers, joseonSubGrades]);
+
+  // Active dataset according to Era
+  const isGoryeo = era === 'goryeo';
+  const currentMcqs = isGoryeo ? goryeoMcqQuestions : joseonMultipleChoiceQuestions;
+  const currentSubs = isGoryeo ? goryeoSubQuestions : joseonSubjectiveQuestions;
+  const currentSummaries = isGoryeo ? goryeoSummaryData : joseonSummaryData;
+
+  const currentMcqAnswers = isGoryeo ? goryeoMcqAnswers : joseonMcqAnswers;
+  const currentBookmarks = isGoryeo ? goryeoBookmarks : joseonBookmarks;
+  const currentSubAnswers = isGoryeo ? goryeoSubAnswers : joseonSubAnswers;
+  const currentSubGrades = isGoryeo ? goryeoSubGrades : joseonSubGrades;
 
   // Handlers
   const handleSelectAnswer = (questionId: number, optionIndex: number) => {
-    setUserAnswers((prev) => ({
-      ...prev,
-      [questionId]: optionIndex,
-    }));
+    if (isGoryeo) {
+      setGoryeoMcqAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
+    } else {
+      setJoseonMcqAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
+    }
   };
 
   const handleToggleBookmark = (questionId: number) => {
-    setBookmarks((prev) =>
-      prev.includes(questionId)
-        ? prev.filter((id) => id !== questionId)
-        : [...prev, questionId]
-    );
+    if (isGoryeo) {
+      setGoryeoBookmarks((prev) =>
+        prev.includes(questionId) ? prev.filter((id) => id !== questionId) : [...prev, questionId]
+      );
+    } else {
+      setJoseonBookmarks((prev) =>
+        prev.includes(questionId) ? prev.filter((id) => id !== questionId) : [...prev, questionId]
+      );
+    }
   };
 
   const handleSaveTextAnswer = (id: number, text: string) => {
-    setUserTextAnswers((prev) => ({
-      ...prev,
-      [id]: text,
-    }));
+    if (isGoryeo) {
+      setGoryeoSubAnswers((prev) => ({ ...prev, [id]: text }));
+    } else {
+      setJoseonSubAnswers((prev) => ({ ...prev, [id]: text }));
+    }
   };
 
   const handleSetGrade = (id: number, grade: 'correct' | 'partial' | 'wrong') => {
-    setUserGrades((prev) => ({
-      ...prev,
-      [id]: grade,
-    }));
+    if (isGoryeo) {
+      setGoryeoSubGrades((prev) => ({ ...prev, [id]: grade }));
+    } else {
+      setJoseonSubGrades((prev) => ({ ...prev, [id]: grade }));
+    }
   };
 
   const handleResetProgress = () => {
-    setUserAnswers({});
-    setBookmarks([]);
-    setUserTextAnswers({});
-    setUserGrades({});
-    localStorage.removeItem('goryeo_mcq_answers');
-    localStorage.removeItem('goryeo_bookmarks');
-    localStorage.removeItem('goryeo_sub_answers');
-    localStorage.removeItem('goryeo_sub_grades');
+    if (isGoryeo) {
+      setGoryeoMcqAnswers({});
+      setGoryeoBookmarks([]);
+      setGoryeoSubAnswers({});
+      setGoryeoSubGrades({});
+    } else {
+      setJoseonMcqAnswers({});
+      setJoseonBookmarks([]);
+      setJoseonSubAnswers({});
+      setJoseonSubGrades({});
+    }
   };
 
   const handleStartQuizWithPage = (page: PageRange) => {
@@ -130,34 +199,45 @@ export default function App() {
     setActiveTab('mcq');
   };
 
-  const solvedMcqCount = Object.keys(userAnswers).length;
-  const solvedSubCount = Object.values(userTextAnswers).filter((t) => t && t.trim().length > 0).length;
+  const solvedMcqCount = Object.keys(currentMcqAnswers).length;
+  const solvedSubCount = Object.values(currentSubAnswers).filter((t) => t && t.trim().length > 0).length;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
       {/* Top Header */}
       <Header
+        era={era}
+        setEra={(newEra) => {
+          setEra(newEra);
+          setMcqPageFilter('all');
+        }}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         solvedMcqCount={solvedMcqCount}
-        totalMcqCount={multipleChoiceQuestions.length}
+        totalMcqCount={currentMcqs.length}
         solvedSubCount={solvedSubCount}
-        totalSubCount={subjectiveQuestions.length}
+        totalSubCount={currentSubs.length}
         onResetProgress={handleResetProgress}
       />
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {activeTab === 'summary' && (
-          <SummarySection onStartQuizWithPage={handleStartQuizWithPage} />
+          <SummarySection
+            key={`${era}-summary`}
+            era={era}
+            summaryList={currentSummaries}
+            onStartQuizWithPage={handleStartQuizWithPage}
+          />
         )}
 
         {activeTab === 'mcq' && (
           <MultipleChoiceView
-            questions={multipleChoiceQuestions}
-            userAnswers={userAnswers}
+            key={`${era}-mcq`}
+            questions={currentMcqs}
+            userAnswers={currentMcqAnswers}
             onSelectAnswer={handleSelectAnswer}
-            bookmarks={bookmarks}
+            bookmarks={currentBookmarks}
             onToggleBookmark={handleToggleBookmark}
             initialPageFilter={mcqPageFilter}
           />
@@ -165,12 +245,13 @@ export default function App() {
 
         {activeTab === 'subjective' && (
           <SubjectiveView
-            questions={subjectiveQuestions}
-            userTextAnswers={userTextAnswers}
+            key={`${era}-sub`}
+            questions={currentSubs}
+            userTextAnswers={currentSubAnswers}
             onSaveTextAnswer={handleSaveTextAnswer}
-            userGrades={userGrades}
+            userGrades={currentSubGrades}
             onSetGrade={handleSetGrade}
-            bookmarks={bookmarks}
+            bookmarks={currentBookmarks}
             onToggleBookmark={handleToggleBookmark}
             initialPageFilter={mcqPageFilter}
           />
@@ -178,15 +259,19 @@ export default function App() {
 
         {activeTab === 'mock' && (
           <MockExamView
-            mcqQuestions={multipleChoiceQuestions}
-            subjectiveQuestions={subjectiveQuestions}
+            key={`${era}-mock`}
+            era={era}
+            mcqQuestions={currentMcqs}
+            subjectiveQuestions={currentSubs}
           />
         )}
 
         {activeTab === 'print' && (
           <PrintExamModal
-            mcqQuestions={multipleChoiceQuestions}
-            subjectiveQuestions={subjectiveQuestions}
+            key={`${era}-print`}
+            era={era}
+            mcqQuestions={currentMcqs}
+            subjectiveQuestions={currentSubs}
           />
         )}
       </main>
@@ -195,9 +280,13 @@ export default function App() {
       <footer className="print:hidden border-t border-slate-900 bg-slate-950/80 text-slate-500 text-xs py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-400" />
+            <span
+              className={`w-2 h-2 rounded-full ${isGoryeo ? 'bg-amber-400' : 'bg-emerald-400'}`}
+            />
             <span className="font-semibold text-slate-300">
-              고려 시대 시험 대비 문제 은행 (89쪽 · 92~97쪽 · 100~101쪽)
+              {isGoryeo
+                ? '고려 시대 시험 대비 문제 은행 (89쪽 · 92~97쪽 · 100~101쪽)'
+                : '조선 시대 시험 대비 문제 은행 (116쪽 · 122~125쪽 · 132~142쪽)'}
             </span>
           </div>
           <p className="text-center sm:text-right text-slate-500">

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { MultipleChoiceQuestion, SubjectiveQuestion } from '../types';
+import { MultipleChoiceQuestion, SubjectiveQuestion, Era } from '../types';
 import { Printer, Download, Eye, EyeOff, FileText, CheckCircle, BookOpen } from 'lucide-react';
 
 interface PrintExamModalProps {
+  era: Era;
   mcqQuestions: MultipleChoiceQuestion[];
   subjectiveQuestions: SubjectiveQuestion[];
 }
@@ -10,6 +11,7 @@ interface PrintExamModalProps {
 type PrintMode = 'all_questions' | 'mcq_only' | 'subjective_only' | 'answer_key' | 'full_solution';
 
 export const PrintExamModal: React.FC<PrintExamModalProps> = ({
+  era,
   mcqQuestions,
   subjectiveQuestions,
 }) => {
@@ -111,10 +113,16 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
         <div className="border-b-2 border-slate-900 pb-4 mb-6">
           <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
             <span>2026학년도 역사과 평가 대비</span>
-            <span>교과서 89쪽 · 92~97쪽 · 100~101쪽</span>
+            <span>
+              {era === 'goryeo'
+                ? '교과서 89쪽 · 92~97쪽 · 100~101쪽'
+                : '교과서 116쪽 · 122~125쪽 · 132~142쪽'}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-center text-slate-950 my-2 tracking-tight">
-            고려의 대외 관계와 고려 후기 정치 변천 시험 문제지
+            {era === 'goryeo'
+              ? '고려의 대외 관계와 고려 후기 정치 변천 시험 문제지'
+              : '조선 통치 체제와 사림의 성장 및 왜란·호란 시험 문제지'}
           </h1>
           <div className="flex items-center justify-between text-xs text-slate-700 pt-2 border-t border-slate-300">
             <span>제 2 학년 ( &nbsp;&nbsp;&nbsp;&nbsp; ) 반 ( &nbsp;&nbsp;&nbsp;&nbsp; ) 번</span>

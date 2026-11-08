@@ -1,4 +1,6 @@
-export type PageRange = 89 | 92 | 93 | 94 | 95 | 96 | 97 | 100 | 101;
+export type Era = 'goryeo' | 'joseon';
+
+export type PageRange = number;
 
 export interface MultipleChoiceQuestion {
   id: number;
