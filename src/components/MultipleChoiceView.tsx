@@ -72,7 +72,7 @@ export const MultipleChoiceView: React.FC<MultipleChoiceViewProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400">전체 문항</p>
-              <p className="text-sm font-bold text-white">50 문제</p>
+              <p className="text-sm font-bold text-white">{totalCount} 문제</p>
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export const MultipleChoiceView: React.FC<MultipleChoiceViewProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400">푼 문제</p>
-              <p className="text-sm font-bold text-sky-400">{solvedCount} / 50</p>
+              <p className="text-sm font-bold text-sky-400">{solvedCount} / {totalCount}</p>
             </div>
           </div>
 
@@ -234,7 +234,7 @@ export const MultipleChoiceView: React.FC<MultipleChoiceViewProps> = ({
       {/* Quick Jump Number Palette */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 shadow-sm">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-slate-400 font-semibold">문항 바로가기 (1 ~ 50)</span>
+          <span className="text-xs text-slate-400 font-semibold">문항 바로가기 (1 ~ {totalCount})</span>
           <div className="flex items-center gap-2 text-[11px] text-slate-400">
             <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> 정답</span>
             <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> 오답</span>

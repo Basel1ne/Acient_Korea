@@ -62,7 +62,7 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
                 : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
           >
-            전체 시험지 (객관식 50 + 주관식 30)
+            전체 시험지 (객관식 {mcqQuestions.length} + 주관식 {subjectiveQuestions.length})
           </button>
           <button
             onClick={() => { setPrintMode('mcq_only'); setIncludeAnswers(false); }}
@@ -72,7 +72,7 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
                 : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
           >
-            객관식 50제 문제지
+            객관식 {mcqQuestions.length}제 문제지
           </button>
           <button
             onClick={() => { setPrintMode('subjective_only'); setIncludeAnswers(false); }}
@@ -82,7 +82,7 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
                 : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
           >
-            주관식 30제 문제지
+            주관식 {subjectiveQuestions.length}제 문제지
           </button>
           <button
             onClick={() => { setPrintMode('answer_key'); }}
@@ -122,7 +122,7 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
           <h1 className="text-2xl sm:text-3xl font-black text-center text-slate-950 my-2 tracking-tight">
             {era === 'goryeo'
               ? '고려의 대외 관계와 고려 후기 정치 변천 시험 문제지'
-              : '조선 통치 체제와 사림의 성장 및 왜란·호란 시험 문제지'}
+              : '조선 통치 체제 & 사화·붕당 & 왜란·호란 & 탕평·세도정치 시험 문제지'}
           </h1>
           <div className="flex items-center justify-between text-xs text-slate-700 pt-2 border-t border-slate-300">
             <span>제 2 학년 ( &nbsp;&nbsp;&nbsp;&nbsp; ) 반 ( &nbsp;&nbsp;&nbsp;&nbsp; ) 번</span>
@@ -139,7 +139,7 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
             </h2>
 
             <div>
-              <h3 className="font-bold text-sm mb-2 text-slate-800">■ 객관식 50문항 정답표</h3>
+              <h3 className="font-bold text-sm mb-2 text-slate-800">■ 객관식 {mcqQuestions.length}문항 정답표</h3>
               <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 text-center text-xs">
                 {mcqQuestions.map((q) => (
                   <div key={q.id} className="border border-slate-300 p-1.5 rounded">
@@ -153,7 +153,7 @@ export const PrintExamModal: React.FC<PrintExamModalProps> = ({
             </div>
 
             <div className="pt-4">
-              <h3 className="font-bold text-sm mb-2 text-slate-800">■ 주관식 30문항 정답 요약</h3>
+              <h3 className="font-bold text-sm mb-2 text-slate-800">■ 주관식 {subjectiveQuestions.length}문항 정답 요약</h3>
               <div className="space-y-2 text-xs">
                 {subjectiveQuestions.map((q) => (
                   <div key={q.id} className="border-b border-slate-200 pb-1.5">

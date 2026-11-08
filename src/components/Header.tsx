@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <span>📜 조선 시대</span>
-                <span className="text-[10px] hidden md:inline opacity-85">(116·122~125·132~142쪽)</span>
+                <span className="text-[10px] hidden md:inline opacity-85">(116·122~125·132~153쪽)</span>
               </button>
             </div>
           </div>
@@ -126,11 +126,13 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   {isGoryeo
                     ? '시험범위: 89쪽 · 92~97쪽 · 100~101쪽'
-                    : '시험범위: 116쪽 · 122~125쪽 · 132~142쪽'}
+                    : '시험범위: 116쪽 · 122~125쪽 · 132~153쪽'}
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5 hidden sm:block">
-                {isGoryeo ? '고려 대외관계 & 후기 정치 변천' : '조선 통치체제 & 사화·붕당 & 왜란·호란'} 객관식 50문항 · 주관식 30문항 완벽 수록
+                {isGoryeo
+                  ? '고려 대외관계 & 후기 정치 변천 | 객관식 50문항 · 주관식 30문항 수록'
+                  : '조선 통치체제 & 사화·붕당 & 왜란·호란 & 탕평·세도정치 | 객관식 70문항 · 주관식 42문항 수록'}
               </p>
             </div>
           </div>
@@ -163,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <CheckCircle2 className="w-4 h-4" />
-            객관식 50제
+            객관식 {totalMcqCount}제
             <span
               className={`text-xs px-1.5 py-0.2 rounded-full ${
                 activeTab === 'mcq'
@@ -171,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'bg-slate-800 text-slate-300'
               }`}
             >
-              {solvedMcqCount}/50
+              {solvedMcqCount}/{totalMcqCount}
             </span>
           </button>
 
@@ -186,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <FileText className="w-4 h-4" />
-            주관식 30제
+            주관식 {totalSubCount}제
             <span
               className={`text-xs px-1.5 py-0.2 rounded-full ${
                 activeTab === 'subjective'
@@ -194,7 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'bg-slate-800 text-slate-300'
               }`}
             >
-              {solvedSubCount}/30
+              {solvedSubCount}/{totalSubCount}
             </span>
           </button>
 

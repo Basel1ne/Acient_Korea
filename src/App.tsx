@@ -286,11 +286,11 @@ export default function App() {
             <span className="font-semibold text-slate-300">
               {isGoryeo
                 ? '고려 시대 시험 대비 문제 은행 (89쪽 · 92~97쪽 · 100~101쪽)'
-                : '조선 시대 시험 대비 문제 은행 (116쪽 · 122~125쪽 · 132~142쪽)'}
+                : '조선 시대 시험 대비 문제 은행 (116쪽 · 122~125쪽 · 132~153쪽)'}
             </span>
           </div>
           <p className="text-center sm:text-right text-slate-500">
-            객관식 50문항 · 주관식 30문항 수록 | 완벽한 시험 준비를 응원합니다!
+            객관식 {currentMcqs.length}문항 · 주관식 {currentSubs.length}문항 수록 | 완벽한 시험 준비를 응원합니다!
           </p>
         </div>
       </footer>

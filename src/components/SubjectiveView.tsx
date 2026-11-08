@@ -77,7 +77,7 @@ export const SubjectiveView: React.FC<SubjectiveViewProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400">전체 주관식</p>
-              <p className="text-sm font-bold text-white">30 문제</p>
+              <p className="text-sm font-bold text-white">{totalCount} 문제</p>
             </div>
           </div>
 
@@ -87,7 +87,7 @@ export const SubjectiveView: React.FC<SubjectiveViewProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400">답안 작성 완료</p>
-              <p className="text-sm font-bold text-sky-400">{answeredCount} / 30</p>
+              <p className="text-sm font-bold text-sky-400">{answeredCount} / {totalCount}</p>
             </div>
           </div>
 

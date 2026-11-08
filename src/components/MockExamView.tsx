@@ -48,18 +48,22 @@ export const MockExamView: React.FC<MockExamViewProps> = ({
     let durationMinutes = 40;
 
     if (type === 'standard') {
-      // 25 MCQs evenly sampled across pages + 5 Subjective questions
-      mcqList = mcqQuestions.filter((_, i) => i % 2 === 0).slice(0, 25);
-      subList = subjectiveQuestions.filter((_, i) => i % 6 === 0).slice(0, 5);
+      // Sample evenly across the entire question bank
+      const step = Math.max(1, Math.floor(mcqQuestions.length / 25));
+      mcqList = mcqQuestions.filter((_, i) => i % step === 0).slice(0, 25);
+      const subStep = Math.max(1, Math.floor(subjectiveQuestions.length / 5));
+      subList = subjectiveQuestions.filter((_, i) => i % subStep === 0).slice(0, 5);
       durationMinutes = 40;
     } else if (type === 'mcq_focus') {
-      // 30 MCQs
-      mcqList = mcqQuestions.slice(0, 30);
+      const step = Math.max(1, Math.floor(mcqQuestions.length / 30));
+      mcqList = mcqQuestions.filter((_, i) => i % step === 0).slice(0, 30);
       subList = [];
       durationMinutes = 30;
     } else {
       // Hard focus: 심화/표준 위주 15 MCQs + 서술형 5
-      mcqList = mcqQuestions.filter((q) => q.difficulty === '심화' || q.difficulty === '표준').slice(0, 15);
+      const hardMcqs = mcqQuestions.filter((q) => q.difficulty === '심화' || q.difficulty === '표준');
+      const step = Math.max(1, Math.floor(hardMcqs.length / 15));
+      mcqList = hardMcqs.filter((_, i) => i % step === 0).slice(0, 15);
       subList = subjectiveQuestions.filter((q) => q.type === '서술형').slice(0, 5);
       durationMinutes = 30;
     }
